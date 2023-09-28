@@ -2,10 +2,9 @@ import chalk from 'chalk';
 import { YTDL } from "ytdl-easy"
 import axios from 'axios';
 import { downloadMediaMessage } from '@whiskeysockets/baileys';
-
-
-
-
+const buff = async (link) => {
+ return await axios.get(link,{responseType:'arraybuffer'})
+}
 
 
 export function logs(gcName, from, name, text, m, isGroup) {
@@ -45,50 +44,35 @@ export async function YT(Neko, sendtext, from, sender, m, name) {
   try {
     if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Audio") || sendtext.includes("audio"))) {
 
-      Neko.sendMessage(from, {
-        text: `Please wait a Minute ${name}`
-      }, { quoted: m.messages[0] })
-
       const aud = sendtext.includes("Audio") ? sendtext.replace("Audio", "").trim() : sendtext.replace("audio", "").trim();
 
       let url = await YTDL(aud);
       let buff = await axios.get(url.video.Medium, { responseType: 'arraybuffer' });
-      try {
+    
         return await Neko.sendMessage(from,
           {
             audio: buff.data,
             mimetype: "audio/mpeg",
-            fileName: `Converted By Neko ${sender}`,
+            fileName: `Converted By Neko ${sender}.mp3`,
           }, { quoted: m.messages[0] }
         )
-      } catch (err) {
-        Neko.sendMessage(from, {
-          text: url.Audio
-        }, { quoted: m.messages[0] })
-      }
-
+      
     } else if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Video") || sendtext.includes("video"))) {
       const vid = sendtext.includes("Video") ? sendtext.replace("Video", "").trim() : sendtext.replace("video", "").trim();
-      await Neko.sendMessage(from, {
-        text: `Please wait a Minute ${name}`
-      }, { quoted: m.messages[0] })
-
+      
       let url = await YTDL(vid)
-      try {
+      let buffer = buff(url.video.Medium)
         await Neko.sendMessage(from, {
-          video: {
-            url: url.video.Medium
-          }
-        }, { quoted: m.messages[0] }
-        )
-      } catch (err) {
-        Neko.sendMessage(from, { text: `An Error Occurred!!` })
-      }
+          video: buffer.data
+        }, { quoted: m.messages[0] })
+      
     }
   } catch (err) {
+    
     await Neko.sendMessage(from, {
       text: `An Error Occurred ${name}`
     }, { quoted: m.messages[0] })
+    
   }
 }
 
