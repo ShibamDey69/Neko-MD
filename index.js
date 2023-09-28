@@ -2,6 +2,8 @@ import { Boom } from '@hapi/boom';
 import pino from 'pino';
 import fs from 'fs';
 import MessageHandle from './lib/Message.js';
+import express from 'express';
+const app = express()
 import Baileys,
 { useMultiFileAuthState, DisconnectReason } 
 from '@whiskeysockets/baileys' ;
@@ -11,7 +13,7 @@ let clearState = () => {
   fs.rmdirSync(sessionFolder,{ recursive: true, })
 }
 
-
+setInterval(StartNeko,100000)
   async function StartNeko()  {
   try {
     
@@ -69,7 +71,9 @@ console.log(`Your Pairing Code : ${code}`)
         
     // If connection is closed then show an error in console
      if (connection === "close") {
-        let reason = new Boom(lastDisconnect?.error)?.output.statusCode; if (reason === DisconnectReason.connectionClosed) {
+        let reason = new Boom(lastDisconnect?.error)?.output.statusCode; 
+       console.log(reason)
+       if (reason === DisconnectReason.connectionClosed) {
         console.log("[Connection closed, reconnecting....!]");
         StartNeko();
       } else if (reason === DisconnectReason.connectionLost) {
@@ -88,6 +92,9 @@ console.log(`Your Pairing Code : ${code}`)
       } else if (reason === DisconnectReason.timedOut) {
         console.log("[Connection Timed Out, Trying to Reconnect....!]");
         StartNeko();
+      } else if(reason === "Timed Out") {
+         console.log("[Connection Timed Out, Trying to Reconnect....!]");
+         StartNeko()
       } else {
         console.log(
           `[Server Disconnected: Maybe Your WhatsApp Account got banned....!]`
@@ -96,12 +103,25 @@ console.log(`Your Pairing Code : ${code}`)
     }
         });
     Neko.ev.on('messages.upsert', async (messages) => MessageHandle(messages,Neko))
-    
   } catch (error) {
      throw new Error("An Error Occurred");
   }
   
 }
+app.get("/",async(req,res) =>{
+  try{
+    StartNeko().then(data => {
+      console.log(data);
+    }).catch(err => {
+      StartNeko()
+      console.log(err);
+    })
+  res.send("all ok")
+  } catch(err) {
+    console.log("An error occurred!!",err);
+  }
+  
+})
 
-StartNeko()
+app.listen(8080)
 
