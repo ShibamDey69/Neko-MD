@@ -4,7 +4,7 @@ import { downloadMediaMessage } from '@whiskeysockets/baileys';
 const buff = async (link) => {
   return await axios.get(link, { responseType: 'arraybuffer' })
 }
-let BASE_URL = `https://witty-hare-cummerbund.cyclic.cloud/`
+let BASE_URL = `https://wabot-jh06.onrender.com/`
 
 export function logs(gcName, from, name, text, m, isGroup) {
 
