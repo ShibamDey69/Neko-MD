@@ -1,11 +1,10 @@
 import chalk from 'chalk';
-import { YTDL } from "ytdl-easy"
 import axios from 'axios';
 import { downloadMediaMessage } from '@whiskeysockets/baileys';
 const buff = async (link) => {
- return await axios.get(link,{responseType:'arraybuffer'})
+  return await axios.get(link, { responseType: 'arraybuffer' })
 }
-
+let BASE_URL = `https://cloudy-hare-outfit.cyclic.cloud/`
 
 export function logs(gcName, from, name, text, m, isGroup) {
 
@@ -46,71 +45,69 @@ export async function YT(Neko, sendtext, from, sender, m, name) {
 
       const aud = sendtext.includes("Audio") ? sendtext.replace("Audio", "").trim() : sendtext.replace("audio", "").trim();
 
-      let url = await YTDL(aud);
-      let buff = await axios.get(url.video.Medium, { responseType: 'arraybuffer' });
-    
-        return await Neko.sendMessage(from,
-          {
-            audio: buff.data,
-            mimetype: "audio/mpeg",
-            fileName: `Converted By Neko ${sender}.mp3`,
-          }, { quoted: m.messages[0] }
-        )
+      let ur = await axios.get(BASE_URL + 'aud?url=' + aud)
       
+        let buffer = await buff(ur.data.result)
+        await Neko.sendMessage(from, {
+          audio: buffer.data,
+          mimetype: "audio/mpeg",
+          ptt: false
+        }, { quoted: m.messages[0] })
     } else if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Video") || sendtext.includes("video"))) {
       const vid = sendtext.includes("Video") ? sendtext.replace("Video", "").trim() : sendtext.replace("video", "").trim();
+
+
+      let ur = await axios.get(BASE_URL + 'vid?url=' + vid)
       
-      let url = await YTDL(vid)
-      let buffer = buff(url.video.Medium)
         await Neko.sendMessage(from, {
-          video: buffer.data
+          video: { url: ur.data.result }
         }, { quoted: m.messages[0] })
-      
     }
   } catch (err) {
-    
+    console.log(err);
     await Neko.sendMessage(from, {
       text: `An Error Occurred ${name}`
     }, { quoted: m.messages[0] })
-    
+
   }
 }
 
 
 export async function onceView(viewonce, Neko, m, name) {
-  try{
-  if (viewonce?.message) {
-    let viewonceType = Object.keys(JSON.parse(JSON.stringify(viewonce?.message)))[0].replace('Message', "")
-    if (viewonceType == "image") {
-      if (viewonce?.message.imageMessage.url != undefined) {
+  try {
+    if (viewonce?.message) {
+      let viewonceType = Object.keys(JSON.parse(JSON.stringify(viewonce?.message)))[0].replace('Message', "")
+      if (viewonceType == "image") {
+        if (viewonce?.message.imageMessage.url != undefined) {
 
-        const buffer = await downloadMediaMessage(
-          m.messages[0], 'buffer', {},
-          {
-            reuploadRequest: Neko.updateMediaMessage
-          }
-        )
+          const buffer = await downloadMediaMessage(
+            m.messages[0], 'buffer', {},
+            {
+              reuploadRequest: Neko.updateMediaMessage
+            }
+          )
 
-        await Neko.sendMessage(Neko.user.id, {
-          image: buffer,
-          caption: `Scraped by *NekoKun* from *${name}*`
-        })
-      }
-    } else {
-      if (viewonce?.message.videoMessage.url != undefined) {
-
-        let buffer = await downloadMediaMessage(m.messages[0], 'buffer', {},
-          {
-            reuploadRequest: Neko.updateMediaMessage
+          await Neko.sendMessage(Neko.user.id, {
+            image: buffer,
+            caption: `Scraped by *NekoKun* from *${name}*`
           })
+        }
+      } else {
+        if (viewonce?.message.videoMessage.url != undefined) {
 
-        await Neko.sendMessage(Neko.user.id, {
-          video: buffer,
-          caption: `Scraped by *NekoKun* from *${name}*`
-        })
+          let buffer = await downloadMediaMessage(m.messages[0], 'buffer', {},
+            {
+              reuploadRequest: Neko.updateMediaMessage
+            })
+
+          await Neko.sendMessage(Neko.user.id, {
+            video: buffer,
+            caption: `Scraped by *NekoKun* from *${name}*`
+          })
+        }
       }
     }
-  } } catch (err) {
-  console.log("An Error Occurred ")
+  } catch (err) {
+    console.log("An Error Occurred ")
   }
 }
