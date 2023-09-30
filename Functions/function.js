@@ -39,38 +39,45 @@ export function logs(gcName, from, name, text, m, isGroup) {
 
 
 
-export async function YT(Neko, sendtext, from, sender, m, name) {
-  try {
-    if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Audio") || sendtext.includes("audio"))) {
+export async function YT(Neko, sendtext, from, sender,m, name) {
+  if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Audio") || sendtext.includes("audio"))) {
 
-      const aud = sendtext.includes("Audio") ? sendtext.replace("Audio", "").trim() : sendtext.replace("audio", "").trim();
+    const aud = sendtext.includes("Audio") ? sendtext.replace("Audio", "").trim() : sendtext.replace("audio", "").trim();
 
-      let ur = await axios.get(BASE_URL + 'aud?url=' + aud)
-      
-        let buffer = await buff(ur.data.result)
-        await Neko.sendMessage(from, {
-          audio: buffer.data,
-          mimetype: "audio/mpeg",
-          ptt: false
-        }, { quoted: m.messages[0] })
-    } else if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Video") || sendtext.includes("video"))) {
-      const vid = sendtext.includes("Video") ? sendtext.replace("Video", "").trim() : sendtext.replace("video", "").trim();
-
-
-      let ur = await axios.get(BASE_URL + 'vid?url=' + vid)
-      
-        await Neko.sendMessage(from, {
-          video: { url: ur.data.result }
-        }, { quoted: m.messages[0] })
+    try {
+      ur = await axios.get(BASE_URL + 'vid?url=' + aud)
+    } catch (error) {
+      await Neko.sendMessage(from, {
+        text: `Wait Another Second You Idiot ${name}`
+      }, { quoted: m.messages[0] })
+      ur = await axios.get(BASE_URL + 'vid?url=' + aud)
     }
-  } catch (err) {
-    console.log(err);
+    let buffer = await buff(ur.data.result)
     await Neko.sendMessage(from, {
-      text: `An Error Occurred ${name}`
+      audio: buffer.data,
+      mimetype: "audio/mpeg",
+      ptt: false
     }, { quoted: m.messages[0] })
+  } else if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Video") || sendtext.includes("video"))) {
+    const vid = sendtext.includes("Video") ? sendtext.replace("Video", "").trim() : sendtext.replace("video", "").trim();
+    let ur;
+    try {
+      ur = await axios.get(BASE_URL + 'vid?url=' + vid)
+    } catch (error) {
+      await Neko.sendMessage(from, {
+        text: `Wait Another Second You Idiot ${name}`
+      }, { quoted: m.messages[0] })
+      ur = await axios.get(BASE_URL + 'vid?url=' + vid)
+    }
 
+    let buffer = await buff(ur.data.result)
+    await Neko.sendMessage(from, {
+      video: buffer.data
+    }, { quoted: m.messages[0] })
   }
 }
+
+
 
 
 export async function onceView(viewonce, Neko, m, name) {

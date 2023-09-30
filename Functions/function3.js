@@ -20,7 +20,7 @@ export async function YtSearch(Neko, text, from, sender, m, name) {
     Neko.sendMessage(from, { text: `Wait A Sec !!` })
     const lol = async (text1) => {
       const r = await yts(text1)
-      
+
       let arr = []
       for (let i = 0; i < r.all.length; i++) {
         if (r.all[i].seconds < 700) {
@@ -38,8 +38,8 @@ export async function YtSearch(Neko, text, from, sender, m, name) {
       await YT(Neko, linkV, from, sender, m, name)
     } else if ((text.startsWith('searcha') || text.startsWith('Searcha'))) {
       await YT(Neko, linkA, from, sender, m, name)
-    } else if(text.startsWith('search')) {
-       
+    } else if (text.startsWith('search')) {
+
     }
   }
 }
