@@ -4,7 +4,7 @@ import { downloadMediaMessage } from '@whiskeysockets/baileys';
 const buff = async (link) => {
   return await axios.get(link, { responseType: 'arraybuffer' })
 }
-let BASE_URL = `https://cloudy-hare-outfit.cyclic.cloud/`
+let BASE_URL = `https://funny-gray-cod.cyclic.cloud/`
 
 export function logs(gcName, from, name, text, m, isGroup) {
 

@@ -2,8 +2,11 @@ import { Boom } from '@hapi/boom';
 import pino from 'pino';
 import fs from 'fs';
 import MessageHandle from './lib/Message.js';
+import {lol} from './lib/ytdl.js';
 import express from 'express';
 import axios from 'axios';
+
+
 
 const app = express()
 import Baileys,
@@ -38,10 +41,7 @@ let clearState = () => {
       auth: state
     })
 
-setInterval(async() => {
- let res = await axios.get('https://wa.nekosenpai69.repl.co')
-  
-},15000)
+
     //check if number is not registered then it will give u code to connect through mobile
     if(!Neko.authState.creds.registered) {
       let phoneNumber = process.env.NUMBER || "917047584741";
@@ -118,14 +118,35 @@ console.log(`Your Pairing Code : ${code}`)
   }
 }
 StartNeko()
-app.get("/",async(req,res) =>{
-try{
-  res.send("all ok")
-  } catch(err) {
-    console.log("An error occurred!!",err);
+let PORT = 8080 || process.env.PORT
+
+app.get("/",async(req,res) => {
+  try{
+  res.send("Ok")
+  } catch(error) {
+    throw new Error(error)
   }
-  
 })
 
-app.listen(8080)
+app.get('/vid',async(req,res) => {
+  try{
+  let ress = await lol(req.query.url)
+  res.json(ress.data)
+  } catch (e) {
+    throw new Error(e)
+  }
+})
+app.get('/aud',async(req,res) => {
+  try {
+  let ress = await lol(req.query.url,'mp3')
+    let boj = {status:'success',
+               statusCode:'200',result:ress}
+  res.json(boj)
+  } catch (e) {
+    throw new Error(e)
+  }
+})
 
+app.listen(PORT,() => {
+  console.log(`API Running on PORT:3000`)
+})
