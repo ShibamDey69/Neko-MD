@@ -40,17 +40,18 @@ export function logs(gcName, from, name, text, m, isGroup) {
 
 
 export async function YT(Neko, sendtext, from, sender,m, name) {
-  if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Audio") || sendtext.includes("audio"))) {
-
+  if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.endsWith("Audio") || sendtext.endsWith("audio"))) {
+console.log("work1")
     const aud = sendtext.includes("Audio") ? sendtext.replace("Audio", "").trim() : sendtext.replace("audio", "").trim();
-
+let ur;
     try {
-      ur = await axios.get(BASE_URL + 'vid?url=' + aud)
+      ur = await axios.get(BASE_URL + 'aud?url=' + aud)
     } catch (error) {
+      console.log("work error 3")
       await Neko.sendMessage(from, {
         text: `Wait Another Second You Idiot ${name}`
       }, { quoted: m.messages[0] })
-      ur = await axios.get(BASE_URL + 'vid?url=' + aud)
+      ur = await axios.get(BASE_URL + 'aud?url=' + aud)
     }
     let buffer = await buff(ur.data.result)
     await Neko.sendMessage(from, {
@@ -58,7 +59,7 @@ export async function YT(Neko, sendtext, from, sender,m, name) {
       mimetype: "audio/mpeg",
       ptt: false
     }, { quoted: m.messages[0] })
-  } else if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.includes("Video") || sendtext.includes("video"))) {
+  } else if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.endsWith("Video") || sendtext.endsWith("video"))) {
     const vid = sendtext.includes("Video") ? sendtext.replace("Video", "").trim() : sendtext.replace("video", "").trim();
     let ur;
     try {
