@@ -23,6 +23,7 @@
     "node-fetch": "^3.2.6",
     "pino": "^8.15.1",
     "prompt-sync": "^4.2.0",
+    "qs": "^6.11.2",
     "yt-search": "^2.10.4",
     "ytdl-easy": "^1.1.5"
   }

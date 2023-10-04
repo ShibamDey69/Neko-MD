@@ -67,9 +67,10 @@ console.log(`Your Pairing Code : ${code}`)
 
     // If connection is open then send a message 
     if(connection === "open") {
+      
           await Neko.sendMessage(
             Neko.user.id,
-            { text: `Hello *${Neko.user.name}* Sir!! Your Prefix is !` }
+            { text: `Hello *${Neko.user.name}* Senpai!!` }
           );
  } 
 
@@ -100,8 +101,7 @@ console.log(`Your Pairing Code : ${code}`)
          clearState()
          StartNeko()
       } else if (reason === DisconnectReason.connectionReplaced) {
-         console.log(`[Connection Replaced,
-         Trying to Reconnect....!]`)
+         console.log(`[Connection Replaced, Trying to Reconnect....!]`)
          StartNeko()
       } else {
         console.log(

@@ -21,11 +21,11 @@ export async function igdl(Neko,from,tex,m) {
 if((tex.includes("instagram.com/tv")||tex.includes("instagram.com/p")) || tex.includes("instagram.com/reel")) {
      if((tex.includes("image")||tex.includes("Image"))) {
        let text = tex.trim().slice(0,-5)
-       if((text.startsWith("#"||"!"||"-")||text.startsWith("/"||"."))) return;
+       
 
      const res = await snapsave(text)
      let i = 0;
-     while(i<(res.data.length/2)){     
+     while(i<(res.data.length/3)){     
       let buffer = await buff(res.data[(i)].url)
      await Neko.sendMessage(from,{image:
           buffer.data
@@ -35,7 +35,6 @@ if((tex.includes("instagram.com/tv")||tex.includes("instagram.com/p")) || tex.in
       }
      } else {
        let text = tex.trim()
-       if((text.startsWith("#"||"!"||"-")||text.startsWith("/"||"."))) return;
 
      const res = await snapsave(text)
      let i= 0;
@@ -49,7 +48,7 @@ if((tex.includes("instagram.com/tv")||tex.includes("instagram.com/p")) || tex.in
      }}
    } 
   } catch (err) {
-    Neko.sendMesaage(from,{text:"An Error Occurred!!"})
+    Neko.sendMessage(from,{text:"An Error Occurred!! in Instagram command"})
                }
 }
 
@@ -64,7 +63,7 @@ export async function facebookdl(Neko,from,text,m) {
     return await Neko.sendMessage(
             from,
             {
-              video: buff.data ,
+              video: buffer.data ,
               caption: `${resp.description}
               Scraped By *NekoKun*`,
             },

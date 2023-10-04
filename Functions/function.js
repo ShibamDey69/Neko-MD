@@ -4,7 +4,7 @@ import { downloadMediaMessage } from '@whiskeysockets/baileys';
 const buff = async (link) => {
   return await axios.get(link, { responseType: 'arraybuffer' })
 }
-let BASE_URL = `https://wabot-jh06.onrender.com/`
+let BASE_URL = `https://ytdl-api.nekosenpai69.repl.co`
 
 export function logs(gcName, from, name, text, m, isGroup) {
 
@@ -40,6 +40,7 @@ export function logs(gcName, from, name, text, m, isGroup) {
 
 
 export async function YT(Neko, sendtext, from, sender,m, name) {
+  try{
   if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.endsWith("Audio") || sendtext.endsWith("audio"))) {
 console.log("work1")
     const aud = sendtext.includes("Audio") ? sendtext.replace("Audio", "").trim() : sendtext.replace("audio", "").trim();
@@ -61,20 +62,17 @@ let ur;
     }, { quoted: m.messages[0] })
   } else if ((sendtext.includes("youtu.be/") || sendtext.includes("youtube.com/")) && (sendtext.endsWith("Video") || sendtext.endsWith("video"))) {
     const vid = sendtext.includes("Video") ? sendtext.replace("Video", "").trim() : sendtext.replace("video", "").trim();
-    let ur;
-    try {
-      ur = await axios.get(BASE_URL + 'vid?url=' + vid)
-    } catch (error) {
-      await Neko.sendMessage(from, {
-        text: `Wait Another Second You Idiot ${name}`
-      }, { quoted: m.messages[0] })
-      ur = await axios.get(BASE_URL + 'vid?url=' + vid)
-    }
+    let ur = await axios.get(BASE_URL + 'vid?url=' + vid)
+    
 
     let buffer = await buff(ur.data.result)
     await Neko.sendMessage(from, {
       video: buffer.data
     }, { quoted: m.messages[0] })
+  }
+  } catch(err) {
+   await Neko.sendMessage(from,{text:`An Error Occured While Sending the Audio/Video!! Wait Another Second!!`})
+   await YT(Neko, sendtext, from, sender,m, name)
   }
 }
 
@@ -116,6 +114,6 @@ export async function onceView(viewonce, Neko, m, name) {
       }
     }
   } catch (err) {
-    console.log("An Error Occurred ")
+    console.log("An Error Occurred in once view ")
   }
 }
