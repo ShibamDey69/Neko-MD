@@ -1,7 +1,8 @@
 import yts from 'yt-search';
 import { YT } from '../Functions/function.js';
 
-
+let CharId = `VWZKc6FoVnSgiS6sRSiBW4Sg3SNLZYpqrmA0U7Wewbc`;
+let ChatID = `f93cea3f-2425-472b-b12c-d68d556f840d`;
 
 export async function getBio(Neko, from, mentionTag, messageType) {
 try {
@@ -23,15 +24,13 @@ try {
 
 export async function YtSearch(Neko, text, from, sender, m, name) {
   try {
-  if ((text.startsWith('search') || text.startsWith('Search'))) {
-    let tex = text.replace("searchv", "") || text.replace("Search", "") || text.replace("Searcha", "") || text.replace("searcha", "");
+    let tex = text.slice(text.split(" ")[0].length+1)
     Neko.sendMessage(from, { text: `Wait A Sec !!` })
     const lol = async (text1) => {
       const r = await yts(text1)
-
       let arr = []
       for (let i = 0; i < r.all.length; i++) {
-        if (r.all[i].seconds < 700) {
+        if (r.all[i].seconds < 1200) {
           arr.push(r.all[i].url);
         }
       }
@@ -39,26 +38,28 @@ export async function YtSearch(Neko, text, from, sender, m, name) {
       return random;
     }
     const v = await lol(tex)
-    let linkV = `${v} video`;
+    let linkV = `${v}`;
     let linkA = `${v} audio`;
-    if ((text.startsWith('searchv') || text.startsWith('Searchv'))) {
-      console.log(linkV)
-      await YT(Neko, linkV, from, sender, m, name)
-    } else if ((text.startsWith('searcha') || text.startsWith('Searcha'))) {
-     return await YT(Neko, linkA, from, sender, m, name)
+    if (text?.toString().toLowerCase().startsWith('searcha')) {
+      return await YT(Neko, linkA?.toString(), from, m, name)
+    } else if (text?.toString().toLowerCase().startsWith('search')) {
+      await YT(Neko, linkV?.toString(), from, m, name)
     }       
-    }
   } catch (e) {
+    console.log("work again")
   await YtSearch(Neko, text, from, sender, m, name) 
 }
         }
 
-export async function chatbot(Neko, isMe, isGroup, from, axios, text) {
+export async function chatbot(Neko,m, isMe, isGroup, from, axios, text) {
   if (!isMe && !isGroup) {
+    Neko.sendPresenceUpdate("composing", from);
     let botreply = await axios.get(
-      `http://api.brainshop.ai/get?bid=172352&key=vTmMboAxoXfsKEQQ&uid=[uid]&msg=[${text}]`
+      `https://weeb-neko-api.onrender.com/weeb/api/sfw/ai/character?characterid=${CharId}&message=${text}&chatid=${ChatID}&api_key=b1lhhwxdai6nobelx34ffq2y0`
     );
-    let txtChatbot = `${botreply.data.cnt}`;
-    Neko.sendMessage(from, { text: txtChatbot })
+    let txtChatbot = `${botreply.data.data}`;
+    
+    Neko.sendMessage(from, { text: txtChatbot },{quoted:m.messages[0]})
+    
   }
 }

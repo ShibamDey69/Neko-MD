@@ -57,7 +57,7 @@ if((tex.includes("instagram.com/tv")||tex.includes("instagram.com/p")) || tex.in
 export async function facebookdl(Neko,from,text,m) {
   try {
     
-   if(text.includes("facebook.com/")) {
+   if(text.includes("https://f")) {
     const resp = await mumaker.facebook(text)
      let buffer = await buff(resp.urls[0].url)
     return await Neko.sendMessage(
